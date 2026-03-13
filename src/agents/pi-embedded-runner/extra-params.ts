@@ -12,8 +12,10 @@ import type { ProviderRuntimeModel } from "../../plugins/types.js";
 import {
   createAnthropicBetaHeadersWrapper,
   createAnthropicFastModeWrapper,
+  createAnthropicServiceTierWrapper,
   createAnthropicToolPayloadCompatibilityWrapper,
   resolveAnthropicFastMode,
+  resolveAnthropicServiceTier,
   resolveAnthropicBetas,
   resolveCacheRetention,
 } from "./anthropic-stream-wrappers.js";
@@ -370,6 +372,17 @@ function applyPostPluginStreamWrappers(
       `applying Anthropic fast mode=${anthropicFastMode} for ${ctx.provider}/${ctx.modelId}`,
     );
     ctx.agent.streamFn = createAnthropicFastModeWrapper(ctx.agent.streamFn, anthropicFastMode);
+  }
+
+  const anthropicServiceTier = resolveAnthropicServiceTier(ctx.effectiveExtraParams);
+  if (anthropicServiceTier) {
+    log.debug(
+      `applying Anthropic service_tier=${anthropicServiceTier} for ${ctx.provider}/${ctx.modelId}`,
+    );
+    ctx.agent.streamFn = createAnthropicServiceTierWrapper(
+      ctx.agent.streamFn,
+      anthropicServiceTier,
+    );
   }
 
   if (typeof ctx.effectiveExtraParams?.fastMode === "boolean") {
