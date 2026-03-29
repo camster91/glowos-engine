@@ -2461,7 +2461,42 @@ describe("applyExtraParamsToAgent", () => {
       });
 
       expect(payload).not.toHaveProperty("service_tier");
+      expect(warnSpy).toHaveBeenCalledTimes(1);
       expect(warnSpy).toHaveBeenCalledWith("ignoring invalid OpenAI service tier param: invalid");
+    } finally {
+      warnSpy.mockRestore();
+    }
+  });
+
+  it("does not warn for valid OpenAI serviceTier values", () => {
+    const warnSpy = vi.spyOn(log, "warn").mockImplementation(() => undefined);
+    try {
+      const payload = runResponsesPayloadMutationCase({
+        applyProvider: "openai",
+        applyModelId: "gpt-5.4",
+        cfg: {
+          agents: {
+            defaults: {
+              models: {
+                "openai/gpt-5.4": {
+                  params: {
+                    serviceTier: "priority",
+                  },
+                },
+              },
+            },
+          },
+        },
+        model: {
+          api: "openai-responses",
+          provider: "openai",
+          id: "gpt-5.4",
+          baseUrl: "https://api.openai.com/v1",
+        } as unknown as Model<"openai-responses">,
+      });
+
+      expect(payload.service_tier).toBe("priority");
+      expect(warnSpy).not.toHaveBeenCalled();
     } finally {
       warnSpy.mockRestore();
     }

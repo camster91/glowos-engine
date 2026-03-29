@@ -366,15 +366,17 @@ function applyPostPluginStreamWrappers(
   // upstream model-ID heuristics for Gemini 3.1 variants.
   ctx.agent.streamFn = createGoogleThinkingPayloadWrapper(ctx.agent.streamFn, ctx.thinkingLevel);
 
-  const anthropicServiceTier = resolveAnthropicServiceTier(ctx.effectiveExtraParams);
-  if (anthropicServiceTier) {
-    log.debug(
-      `applying Anthropic service_tier=${anthropicServiceTier} for ${ctx.provider}/${ctx.modelId}`,
-    );
-    ctx.agent.streamFn = createAnthropicServiceTierWrapper(
-      ctx.agent.streamFn,
-      anthropicServiceTier,
-    );
+  if (ctx.provider === "anthropic") {
+    const anthropicServiceTier = resolveAnthropicServiceTier(ctx.effectiveExtraParams);
+    if (anthropicServiceTier) {
+      log.debug(
+        `applying Anthropic service_tier=${anthropicServiceTier} for ${ctx.provider}/${ctx.modelId}`,
+      );
+      ctx.agent.streamFn = createAnthropicServiceTierWrapper(
+        ctx.agent.streamFn,
+        anthropicServiceTier,
+      );
+    }
   }
 
   const anthropicFastMode = resolveAnthropicFastMode(ctx.effectiveExtraParams);
