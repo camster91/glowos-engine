@@ -366,14 +366,6 @@ function applyPostPluginStreamWrappers(
   // upstream model-ID heuristics for Gemini 3.1 variants.
   ctx.agent.streamFn = createGoogleThinkingPayloadWrapper(ctx.agent.streamFn, ctx.thinkingLevel);
 
-  const anthropicFastMode = resolveAnthropicFastMode(ctx.effectiveExtraParams);
-  if (anthropicFastMode !== undefined) {
-    log.debug(
-      `applying Anthropic fast mode=${anthropicFastMode} for ${ctx.provider}/${ctx.modelId}`,
-    );
-    ctx.agent.streamFn = createAnthropicFastModeWrapper(ctx.agent.streamFn, anthropicFastMode);
-  }
-
   const anthropicServiceTier = resolveAnthropicServiceTier(ctx.effectiveExtraParams);
   if (anthropicServiceTier) {
     log.debug(
@@ -383,6 +375,14 @@ function applyPostPluginStreamWrappers(
       ctx.agent.streamFn,
       anthropicServiceTier,
     );
+  }
+
+  const anthropicFastMode = resolveAnthropicFastMode(ctx.effectiveExtraParams);
+  if (anthropicFastMode !== undefined) {
+    log.debug(
+      `applying Anthropic fast mode=${anthropicFastMode} for ${ctx.provider}/${ctx.modelId}`,
+    );
+    ctx.agent.streamFn = createAnthropicFastModeWrapper(ctx.agent.streamFn, anthropicFastMode);
   }
 
   if (typeof ctx.effectiveExtraParams?.fastMode === "boolean") {
