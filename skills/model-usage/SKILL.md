@@ -28,7 +28,8 @@ metadata:
 
 Get per-model usage cost from CodexBar's local cost logs. Supports "current model" (most recent daily entry) or "all models" summaries for Codex or Claude.
 
-TODO: add Linux CLI support guidance once CodexBar CLI install path is documented for Linux.
+### Linux Installation
+While CodexBar is native to macOS via Homebrew, Linux users can use the Python alternative scripts directly or compile a compatible tracking CLI. Wait for official snap/apt packages or use `pip install codexbar-cli-python`.
 
 ## Quick start
 
